@@ -1,6 +1,8 @@
 import React, {Component}  from 'react';
+import StockCard from './stockCard.js';
 import axios from 'axios';
-const finnhub = require('finnhub');
+import finnhub from 'finnhub';
+
 //import getTopList  from '../utils/getList.js';
 
 class ShowStocks extends Component{
@@ -10,126 +12,135 @@ class ShowStocks extends Component{
       topList: [],
       symbols: [],
       quotes: [],
-      count: 0
-      //isLoading: true;
+      count: 0,
+      isLoading: true
     };
   }
-
-  finnhubConfig = () => {
-    const api_key = finnhub.ApiClient.instance.authentications['api_key'];
-    api_key.apiKey = "bsre93v48v6tucpg3cpg" // Replace this
-    const finnhubClient = new finnhub.DefaultApi();
-    console.dir(finnhubClient);
-  }
   //var count = 0;
-  loadQuotes = (symbol) => {
+  sortQuoteItems = () => {
+    //this.state.quotes.map((quotesItem, i) => ()
+    //var obj = this.state.quotes;
+    console.dir(this.state.quotes);
+    console.log("madeithere");
+    //if(this.state.quotes.length > 27){
+      console.log("madeithere");
+      const symbols = this.state.symbols;
+      const quotes = this.state.quotes;
+      const sortedList = [];
+      //for(let i=0; i < symbols.length; i++){
+        for(let j=0; j < quotes.length; j++){
+          //var obj = quotes[j];
+          //console.log(obj);
+          /*if(symbols[i] === quotes[j].sym){
+            sortedList.push(quotes[j]);
+          }*/
+        }
+      //}
+      console.log(sortedList);
+    //}
+  }
+  loadQuotes = (arr) => {
     //console.log(symbol);
     //console.log(symbols);
-    const token = "bsre93v48v6tucpg3cpg"
-    const url = "https://finnhub.io/api/v1/quote?symbol="+symbol+"&token="+token;
-    axios(url)
-    .then((response) => {
-      console.log(response);
-    }).catch(err => {console.log(err);});
+    //console.log(arr); still in order here
+    const quotelst = [];
+    //if (arr.length === 25){
+      const token = "bsre93v48v6tucpg3cpg"
+      for (let i=0; i < arr.length; i++){
+        let symbol = arr[i];
+        let url = "https://finnhub.io/api/v1/quote?symbol="+symbol+"&token="+token;
+        //new Promise(function(resolve, reject){
+          axios(url)
+          .then((response) => {
+            //console.log(response);
+            //console.log(i);
+            const quoteItem = {
+              sym:        symbol,
+              cost:       response.data.c,
+              high:       response.data.h,
+              low:        response.data.l,
+              open:       response.data.o,
+              prev_close: response.data.pc,
+            }
+            //console.log(quoteItem);
+            quotelst.push(quoteItem);
+            this.setState({ quotes: [...this.state.quotes, quotelst] });
+            //quotelst[quotelst.length] = quoteItem;
+          }).catch(err => {console.log(err);});
+        //}).then(function(result){
+        //  console.log(result);
+        //});
+        //console.log(quotelst);
+        //this.setState({quotes: quotelst});
+      }
+      //console.log(quotelst.forEach((x) => {console.log(x)}));
+      //console.log(JSON.stringify(quotelst));
+      //console.log(quotelst);
+      //const deepcopy = [...quotelst];
+      //const deepcopy = quotelst.slice();
+      //this.setState({quotes: deepcopy});
+      console.log(this.state.quotes);
+
+      //const symbols = this.state.symbols;
+      //const quotes = this.state.quotes;
+      //const sortedList = [];
+      //quotelst.map(x => console.log(x));
+      //this.setState({ quotes: [...this.state.quotes, quoteItem] });
+      //this.setState({quotes: quotelst});
+      this.setState({isLoading: false});
+      //this.sortQuoteItems();
+
+      //console.log(sortedList);
+      //this.sortQuoteItems(quotelst);
+      //this.setState({quotes: quotelst});
+
+    //}
   }
-  //setInterval(function(){
-  //  this.loadQuotes()}, 500)
-  loadStocks = (url) => {
-    axios(url)
-    .then((response) => {
-      //const lst = [];
-      //console.log(response.data.symbol);
-      //for(let i=0; i < response.data.length-1; i++){
-        //console.log(response.data.symbol);
-        //lst.push(response.data.symbol);
-      this.setState({ symbols: [...this.state.symbols, response.data.symbol] });
-      //}
-      //console.log(lst);
-      //this.setState({symbols: lst});
-      //console.log(this.state.symbols);
-      //this.loadQuotes(this.state.symbols);
-      //console.log(this.state.symbols);
-    }).catch(err => {console.log(err);});
-    //return stock object.
-    //console.log(this.state.symbols);
+  loadFirstStocks = () => {
+    if (this.state.symbols.length === 100){
+      var arr = this.state.symbols.slice(0, 30);
+      this.loadQuotes(arr);
+    }
   };
 
-  loadStockURLs = () => {
-    const api_key = finnhub.ApiClient.instance.authentications['api_key'];
-    api_key.apiKey = "bsre93v48v6tucpg3cpg" // Replace this
-    const finnhubClient = new finnhub.DefaultApi();
-    console.dir(finnhubClient);
-    if (this.state.topList.length > 0 ){
+  loadSymbols = () => {
+    if (this.state.topList.length === 100 ){
       const lst = this.state.topList;
-      //console.log(this.state.topList);
       const sym = [];
-      for(let i=0; i < lst.length-1; i++){
-        //console.log(response.data.symbol);
+      for(let i=0; i < lst.length; i++){
         let path = lst[i].slice(25);
         axios(path)
         .then((response) => {
-          console.log(response.data.symbol);
-          /*
-          finnhubClient.quote(response.data.symbol, (error, data, response) => {
-            console.log(data)
-          });
-          */
+          this.setState({ symbols: [...this.state.symbols, response.data.symbol] });
+          this.loadFirstStocks();
         }).catch(err => {console.log(err);});
-
       }
-      /*
-      setInterval(() => {
-        for(let i=0; i < lst.length-1; i++){
-          let path = lst[i].slice(25);
-          //this.loadStocks(path);
-          axios(path)
-          .then((response) => {
-            //setInterval(this.loadQuotes(response.data.symbol), 9000000);
-            this.loadQuotes(response.data.symbol);
-          }).catch(err => {console.log(err);});
-          //console.log(this.state.count);
-          this.state.count++;
-        }
-      }, 50000);
-      /*
-      for(let i=0; i < lst.length-1; i++){
-        let path = lst[i].slice(25);
-        //this.loadStocks(path);
-        axios(path)
-        .then((response) => {
-          //setInterval(this.loadQuotes(response.data.symbol), 9000000);
-          this.loadQuotes(response.data.symbol);
-        }).catch(err => {console.log(err);});
-        //console.log(this.state.count);
-        this.state.count++;
-      }
-      */
-      //console.dir(sym);
-      //console.dir(sym[0]);
-      //this.setState({symbols: sym});
-      //console.log(this.state.symbols.length);
-      //console.log(Object.keys(this.state.symbols));
-
+      //this.loadFirstStocks();
     }
   }
-  loadTopList = () => {
+  loadTopListURLs = () => {
     const url = "midlands/tags/tag/100-most-popular/";
     axios(url)
     .then((response) => {
-      //console.log(response.data.instruments[0]);
+      //Log statement below is list of robinhood urls for each top stock
+      //console.log(response.data.instruments[5]);
       //const lst = [];
       const lst = [...response.data.instruments];
       this.setState({topList: lst});
-      this.loadStockURLs();
+      this.loadSymbols();
+      //this.loadStockURLs();
       //setInterval(this.loadStockURLs,90000);
     })
     .catch(function (error) {
       console.log(error);
     });
   }
+  handleClick = () => {
+    console.log("clicked");
+  }
   componentDidMount(){
     //this.finnhubConfig();
-    this.loadTopList();
+    this.loadTopListURLs();
 
     if(this.state.symbols.length > 0){
 
@@ -140,12 +151,8 @@ class ShowStocks extends Component{
     return (
       <div>
         <div className="container">
-          <div className= "card">
-            <div className="card-header">
-              <h2>Symbol</h2>
-            </div>
-          </div>
-          <button onClick={}>Show More</button>
+          <StockCard isLoading={this.state.isLoading} symbols={this.state.symbols} quotes={this.state.quotes}></StockCard>
+          <button onClick={this.handleClick}>Show More</button>
         </div>
       </div>
     )
