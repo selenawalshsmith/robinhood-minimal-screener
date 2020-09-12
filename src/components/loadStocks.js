@@ -1,44 +1,21 @@
 import React, {Component}  from 'react';
-import StockCard from './stockCard.js';
+import ShowStock from './showStock.js';
 import axios from 'axios';
 import finnhub from 'finnhub';
 
 //import getTopList  from '../utils/getList.js';
 
-class ShowStocks extends Component{
+class LoadStocks extends Component{
   constructor(props) {
     super(props);
     this.state = {
       topList: [],
       symbols: [],
       quotes: [],
-      count: 0,
       isLoading: true
     };
   }
-  //var count = 0;
-  sortQuoteItems = () => {
-    //this.state.quotes.map((quotesItem, i) => ()
-    //var obj = this.state.quotes;
-    console.dir(this.state.quotes);
-    console.log("madeithere");
-    //if(this.state.quotes.length > 27){
-      console.log("madeithere");
-      const symbols = this.state.symbols;
-      const quotes = this.state.quotes;
-      const sortedList = [];
-      //for(let i=0; i < symbols.length; i++){
-        for(let j=0; j < quotes.length; j++){
-          //var obj = quotes[j];
-          //console.log(obj);
-          /*if(symbols[i] === quotes[j].sym){
-            sortedList.push(quotes[j]);
-          }*/
-        }
-      //}
-      console.log(sortedList);
-    //}
-  }
+  /*
   loadQuotes = (arr) => {
     //console.log(symbol);
     //console.log(symbols);
@@ -49,7 +26,6 @@ class ShowStocks extends Component{
       for (let i=0; i < arr.length; i++){
         let symbol = arr[i];
         let url = "https://finnhub.io/api/v1/quote?symbol="+symbol+"&token="+token;
-        //new Promise(function(resolve, reject){
           axios(url)
           .then((response) => {
             //console.log(response);
@@ -67,41 +43,19 @@ class ShowStocks extends Component{
             this.setState({ quotes: [...this.state.quotes, quotelst] });
             //quotelst[quotelst.length] = quoteItem;
           }).catch(err => {console.log(err);});
-        //}).then(function(result){
-        //  console.log(result);
-        //});
-        //console.log(quotelst);
-        //this.setState({quotes: quotelst});
       }
-      //console.log(quotelst.forEach((x) => {console.log(x)}));
-      //console.log(JSON.stringify(quotelst));
-      //console.log(quotelst);
-      //const deepcopy = [...quotelst];
-      //const deepcopy = quotelst.slice();
-      //this.setState({quotes: deepcopy});
       console.log(this.state.quotes);
-
-      //const symbols = this.state.symbols;
-      //const quotes = this.state.quotes;
-      //const sortedList = [];
-      //quotelst.map(x => console.log(x));
-      //this.setState({ quotes: [...this.state.quotes, quoteItem] });
-      //this.setState({quotes: quotelst});
       this.setState({isLoading: false});
-      //this.sortQuoteItems();
-
-      //console.log(sortedList);
-      //this.sortQuoteItems(quotelst);
-      //this.setState({quotes: quotelst});
-
-    //}
   }
+  */
+  /*
   loadFirstStocks = () => {
     if (this.state.symbols.length === 100){
       var arr = this.state.symbols.slice(0, 30);
       this.loadQuotes(arr);
     }
   };
+  */
 
   loadSymbols = () => {
     if (this.state.topList.length === 100 ){
@@ -112,7 +66,12 @@ class ShowStocks extends Component{
         axios(path)
         .then((response) => {
           this.setState({ symbols: [...this.state.symbols, response.data.symbol] });
-          this.loadFirstStocks();
+          //this.loadFirstStocks();
+          //console.log(this.state.symbols.length);
+          if(this.state.symbols.length === 100){
+            console.log(this.state.symbols);
+            this.setState({isLoading: false});
+          }
         }).catch(err => {console.log(err);});
       }
       //this.loadFirstStocks();
@@ -142,20 +101,16 @@ class ShowStocks extends Component{
     //this.finnhubConfig();
     this.loadTopListURLs();
 
-    if(this.state.symbols.length > 0){
-
-    }
   }
 
   render (){
     return (
       <div>
         <div className="container">
-          <StockCard isLoading={this.state.isLoading} symbols={this.state.symbols} quotes={this.state.quotes}></StockCard>
-          <button onClick={this.handleClick}>Show More</button>
+          <ShowStock isLoading={this.state.isLoading} symbols={this.state.symbols} quotes={this.state.quotes}></ShowStock>
         </div>
       </div>
     )
   }
 };
-export default ShowStocks;
+export default LoadStocks;
