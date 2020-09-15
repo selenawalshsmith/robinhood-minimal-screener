@@ -119,3 +119,27 @@ button {
     -webkit-transform: scaleY(1.0);
   }
 }
+
+.footer {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  float: right;
+  width: 100%;
+  color: #FAEBD7;
+  text-align: right;
+  padding: 10px;
+  margin: 10px;
+}
+
+.row {
+  display: flex;
+}
+
+.column {
+  flex: 50%;
+}
+
+.caret:hover {
+  cursor: pointer;
+}

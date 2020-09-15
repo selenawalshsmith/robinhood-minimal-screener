@@ -1,5 +1,5 @@
 import React, {Component}  from 'react';
-import Fundamentals from "./fundamentals";
+import LoadFundamentals from "./loadFundamentals";
 import axios from 'axios';
 import finnhub from 'finnhub';
 
@@ -10,6 +10,7 @@ class StockCard extends Component{
 
     };
   }
+
   componentDidMount(){
 
   }
@@ -17,10 +18,12 @@ class StockCard extends Component{
   render (){
     return (
       <div className="card">
-        <div className="container">
-          <div>
-            <h2 style={{display: "inline-block"}}>{this.props.stock}</h2>
-            <Fundamentals stock={this.props.stock} />
+        <div className="container" style={{padding: "5px"}}>
+          <div style={{display: "inline-block", position: "absolute", marginLeft: "75px"}}>
+            <h2>{this.props.stock}</h2>
+          </div>
+          <div style={{display: "inline-block", marginLeft: "150px", marginTop: "7px", width: "700px" }}>
+            <LoadFundamentals stock={this.props.stock}/>
           </div>
         </div>
       </div>
